@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unsplash Random Image</title>
+<style>
+  #container {
+    text-align: center;
+    margin-top: 50px;
+  }
+  #photo {
+    width: 400px;
+    height: auto;
+  }
+</style>
+</head>
+<body>
+<div id="container">
+  <img id="photo" src="" alt="Random Photo">
+  <p id="photographer"></p>
+  <button id="likeButton">Like</button>
+  <p id="likeCount">0</p>
+</div>
+
+<script>
+const accessKey = 'd5FF_Od737glr3WyuUIhR5qi1m9VIlM2cFHwh8Zg75w';
+const apiUrl = `https://api.unsplash.com/photos/random?client_id=${accessKey}`;
+
+const photoElement = document.getElementById('photo');
+const photographerElement = document.getElementById('photographer');
+const likeButton = document.getElementById('likeButton');
+const likeCountElement = document.getElementById('likeCount');
+
+// Get random photo from Unsplash API
+async function getRandomPhoto() {
+  try {
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+    const photoUrl = data.urls.regular;
+    const photographerName = data.user.name;
+
+    photoElement.src = photoUrl;
+    photographerElement.textContent = `Photographer: ${photographerName}`;
+  } catch (error) {
+    console.error('Error fetching random photo:', error);
+  }
+}
+
+// Like functionality
+let likeCount = parseInt(localStorage.getItem('likeCount')) || 0;
+likeCountElement.textContent = likeCount;
+
+likeButton.addEventListener('click', () => {
+  likeCount++;
+  likeCountElement.textContent = likeCount;
+  localStorage.setItem('likeCount', likeCount);
+});
+
+// Load random photo when page loads
+getRandomPhoto();
+</script>
+</body>
+</html>
